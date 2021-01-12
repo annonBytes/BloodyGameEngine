@@ -25,7 +25,6 @@
 #define ENTITY_RADIUS 15.0
 #define NUM_ENTITIES 50
 
-
 using namespace astu;
 
 CollisionTestService::CollisionTestService()
@@ -33,10 +32,11 @@ CollisionTestService::CollisionTestService()
 {
     // Create circular shape.
     const int nSegments = 15;
-    shape = std::make_shared<Polyline::Polygon>();  
+    shape = std::make_shared<Polyline::Polygon>();
 
     double da = (2 * M_PI) / nSegments;
-    for(int i = 0; i < nSegments; ++i) {
+    for (int i = 0; i < nSegments; ++i)
+    {
         Vector2<double> v(ENTITY_RADIUS, 0);
         v.Rotate(da * i);
         shape->push_back(v);
@@ -46,12 +46,12 @@ CollisionTestService::CollisionTestService()
 void CollisionTestService::OnStartup()
 {
     // Register as collision listener.
-    GetSM().GetService<CollisionEventService>()
-        .AddListener(shared_as<CollisionListener>());
+    GetSM().GetService<CollisionEventService>().AddListener(shared_as<CollisionListener>());
 
-    auto & wm = GetSM().GetService<IWindowManager>();
+    auto &wm = GetSM().GetService<IWindowManager>();
 
-    for(int i = 0; i <NUM_ENTITIES; ++i) {
+    for (int i = 0; i < NUM_ENTITIES; ++i)
+    {
         Vector2<double> p;
         p.x = GetRandomDouble(ENTITY_RADIUS, wm.GetWidth() - ENTITY_RADIUS);
         p.y = GetRandomDouble(ENTITY_RADIUS, wm.GetHeight() - ENTITY_RADIUS);
@@ -63,11 +63,10 @@ void CollisionTestService::OnStartup()
 void CollisionTestService::OnShutdown()
 {
     // De-Register as collision listener.
-    GetSM().GetService<CollisionEventService>()
-        .RemoveListener(shared_as<CollisionListener>());
+    GetSM().GetService<CollisionEventService>().RemoveListener(shared_as<CollisionListener>());
 }
 
-void CollisionTestService::AddTestEntity(const Vector2<double> & p, double s, const Color & c)
+void CollisionTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)
 {
     Vector2<double> v(GetRandomDouble(50, 200), 0);
     v.Rotate(ToRadians(GetRandomDouble(0, 360)));
@@ -78,16 +77,18 @@ void CollisionTestService::AddTestEntity(const Vector2<double> & p, double s, co
     entity->AddComponent(std::make_shared<LinearMovement>(v));
     entity->AddComponent(std::make_shared<CircleCollider>(ENTITY_RADIUS));
 
-    auto & es = GetSM().GetService<EntityService>();
+    auto &es = GetSM().GetService<EntityService>();
     es.AddEntity(entity);
 }
 
-
-void CollisionTestService::OnSignal(const CollisionEvent & event)
+void CollisionTestService::OnSignal(const CollisionEvent &event)
 {
-    if (GetRandomDouble() >= 0.5) {
+    if (GetRandomDouble() >= 0.5)
+    {
         GetSM().GetService<EntityService>().RemoveEntity(event.entityA);
-    } else {
+    }
+    else
+    {
         GetSM().GetService<EntityService>().RemoveEntity(event.entityB);
     }
 }

@@ -25,6 +25,7 @@ add_executable(Demo
         CreateEntityTestService.cpp
         CollisionTestService.cpp
         LinearMovementSystem.cpp
+        PlayerTestService.cpp
         ../astu/src/sdl/SdlAudioService.cpp
         ../astu/src/sdl/SdlEventService.cpp
         ../astu/src/sdl/SdlRenderService.cpp

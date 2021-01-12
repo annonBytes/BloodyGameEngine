@@ -41,6 +41,7 @@
 #include "EntityTestService.h"
 #include "CreateEntityTestService.h"
 #include "LinearMovementSystem.h"
+#include "PlayerTestService.h"
 
 using namespace std;
 using namespace astu;
@@ -48,17 +49,19 @@ using namespace astu;
 const std::string kAppName = "Bagaga Demo";
 const std::string kAppVersion = "0.4.0";
 
-class MyButtonHandler : public astu::MouseButtonListener {
+class MyButtonHandler : public astu::MouseButtonListener
+{
 public:
-
 	MyButtonHandler()
 		: stateIdx(0)
 	{
 		// Intentionally left empty.
 	}
 
-	virtual void OnSignal(const MouseButtonEvent & event) override {
-		if (!event.pressed || event.button != MouseButtonEvent::LEFT) {
+	virtual void OnSignal(const MouseButtonEvent &event) override
+	{
+		if (!event.pressed || event.button != MouseButtonEvent::LEFT)
+		{
 			// Only process button down events.
 			return;
 		}
@@ -69,32 +72,29 @@ public:
 	}
 
 private:
-
 	int stateIdx;
 
-	void SwitchState() {
-		auto & sm = ServiceManager::GetInstance().GetService<StateService>();
+	void SwitchState()
+	{
+		auto &sm = ServiceManager::GetInstance().GetService<StateService>();
 
 		// Hardcoded simple state machine.
-		switch (stateIdx) {
+		switch (stateIdx)
+		{
 		case 0:
-			ServiceManager::GetInstance().GetService<StateService>()
-				.SwitchState("MovingLines");
+			ServiceManager::GetInstance().GetService<StateService>().SwitchState("MovingLines");
 			break;
 
 		case 1:
-			ServiceManager::GetInstance().GetService<StateService>()
-				.SwitchState("Entities");
+			ServiceManager::GetInstance().GetService<StateService>().SwitchState("Player Test");
 			break;
 
 		case 2:
-			ServiceManager::GetInstance().GetService<StateService>()
-				.SwitchState("Create Entities");
+			ServiceManager::GetInstance().GetService<StateService>().SwitchState("Create Entities");
 			break;
 
 		case 3:
-			ServiceManager::GetInstance().GetService<StateService>()
-				.SwitchState("Collision Test");
+			ServiceManager::GetInstance().GetService<StateService>().SwitchState("Collision Test");
 			break;
 
 		default:
@@ -122,7 +122,7 @@ void AddCoreServices()
 	sm.AddService(std::make_shared<SdlEventService>());
 	sm.AddService(std::make_shared<SdlRenderService>());
 	sm.AddService(std::make_shared<SdlTimeService>());
-	
+
 	// Experimental event-based input handling.
 	sm.AddService(std::make_shared<MouseButtonEventService>());
 	sm.GetService<MouseButtonEventService>().AddListener(std::make_shared<MyButtonHandler>());
@@ -131,7 +131,7 @@ void AddCoreServices()
 void AddApplicationStates()
 {
 	// Fetch central state service.
-	auto & ss = ServiceManager::GetInstance().GetService<StateService>();
+	auto &ss = ServiceManager::GetInstance().GetService<StateService>();
 
 	// Add line render demo state.
 	ss.CreateState("MovingLines"); // optional
@@ -149,7 +149,7 @@ void AddApplicationStates()
 	ss.AddService("Entities", std::make_shared<EntityTestService>());
 
 	// Add create entities test state.
-	ss.CreateState("Create Entities");	// optional
+	ss.CreateState("Create Entities"); // optional
 	ss.AddService("Create Entities", std::make_shared<WindowTitleService>("(Create Entities)"));
 	ss.AddService("Create Entities", std::make_shared<EntityService>());
 	ss.AddService("Create Entities", std::make_shared<SdlLineRenderer>());
@@ -158,18 +158,26 @@ void AddApplicationStates()
 	ss.AddService("Create Entities", std::make_shared<CreateEntityTestService>());
 
 	// Add collision test state.
-	ss.CreateState("Collision Test");	// optional
+	ss.CreateState("Collision Test"); // optional
 	ss.AddService("Collision Test", std::make_shared<WindowTitleService>("(Collision Test)"));
 	ss.AddService("Collision Test", std::make_shared<EntityService>());
 	ss.AddService("Collision Test", std::make_shared<SdlLineRenderer>());
 	ss.AddService("Collision Test", std::make_shared<AutoRotateSystem>());
 	ss.AddService("Collision Test", std::make_shared<PolylineVisualSystem>());
-	ss.AddService("Collision Test", std::make_shared<LinearMovementSystem>());	
+	ss.AddService("Collision Test", std::make_shared<LinearMovementSystem>());
 	ss.AddService("Collision Test", std::make_shared<CollisionEventService>());
-	ss.AddService("Collision Test", std::make_shared<CollisionDetectionSystem>());	
+	ss.AddService("Collision Test", std::make_shared<CollisionDetectionSystem>());
 	ss.AddService("Collision Test", std::make_shared<CollisionTestService>());
-}
 
+	//Add Player Test state
+	ss.CreateState("Player Test"); // optional
+	ss.AddService("Player Test", std::make_shared<WindowTitleService>("(Player Test)"));
+	ss.AddService("Player Test", std::make_shared<EntityService>());
+	ss.AddService("Player Test", std::make_shared<SdlLineRenderer>());
+	ss.AddService("Player Test", std::make_shared<AutoRotateSystem>());
+	ss.AddService("Player Test", std::make_shared<PolylineVisualSystem>());
+	ss.AddService("Player Test", std::make_shared<PlayerTestService>());
+}
 
 int main()
 {
@@ -179,7 +187,8 @@ int main()
 
 	Mouse mouse;
 
-	if (mouse.IsPressed(1)) {
+	if (mouse.IsPressed(1))
+	{
 		std::cout << "mouse button pressed" << std::endl;
 	}
 

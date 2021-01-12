@@ -5,8 +5,8 @@
 #include <SignalService.h>
 #include "CircleCollider.h"
 
-
-class CollisionEvent final {
+class CollisionEvent final
+{
 public:
     std::shared_ptr<astu::Entity> entityA;
     std::shared_ptr<astu::Entity> entityB;
@@ -17,11 +17,13 @@ public:
         // Intentionally left empty.
     }
 
-    astu::Entity & GetEntityA() const { 
+    astu::Entity &GetEntityA() const
+    {
         return *entityA;
     }
 
-    astu::Entity & GetEntityB() const {
+    astu::Entity &GetEntityB() const
+    {
         return *entityB;
     }
 };
@@ -29,12 +31,9 @@ public:
 using CollisionEventService = astu::SignalService<CollisionEvent>;
 using CollisionListener = astu::ISignalListener<CollisionEvent>;
 
-
-class CollisionDetectionSystem : 
-    public astu::UpdatableBaseService
+class CollisionDetectionSystem : public astu::UpdatableBaseService
 {
 public:
-
     CollisionDetectionSystem(int priority = 0);
 
 private:
@@ -49,6 +48,6 @@ private:
     virtual void OnShutdown() override;
     virtual void OnUpdate() override;
 
-    bool IsColliding(astu::Entity & a, astu::Entity & b);
+    bool IsColliding(astu::Entity &a, astu::Entity &b);
     void ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b);
 };

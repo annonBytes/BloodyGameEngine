@@ -17,12 +17,13 @@ CollisionDetectionSystem::CollisionDetectionSystem(int priority)
 
 void CollisionDetectionSystem::OnStartup()
 {
-    auto & es = GetSM().GetService<EntityService>();
-    entityView = 
+    auto &es = GetSM().GetService<EntityService>();
+    entityView =
         es.GetEntityView(EntityFamily::Create<Pose2D, CircleCollider>());
 
     collisionEventService = GetSM().FindService<CollisionEventService>();
-    if (!collisionEventService) {
+    if (!collisionEventService)
+    {
         throw std::logic_error("Collision detection systems requires collision event service");
     }
 }
@@ -30,37 +31,40 @@ void CollisionDetectionSystem::OnStartup()
 void CollisionDetectionSystem::OnShutdown()
 {
     collisionEventService = nullptr;
-    entityView = nullptr;    
+    entityView = nullptr;
 }
 
 void CollisionDetectionSystem::OnUpdate()
 {
-    for (size_t j = 0; j < entityView->size(); ++j) {
-        const auto & entityA = (*entityView)[j];
+    for (size_t j = 0; j < entityView->size(); ++j)
+    {
+        const auto &entityA = (*entityView)[j];
 
-        for (size_t i = j + 1; i < entityView->size(); ++i) {
-            const auto & entityB = (*entityView)[i];
+        for (size_t i = j + 1; i < entityView->size(); ++i)
+        {
+            const auto &entityB = (*entityView)[i];
 
-            if (IsColliding(*entityA, *entityB)) {
+            if (IsColliding(*entityA, *entityB))
+            {
                 ReportCollision(entityA, entityB);
             }
         }
     }
 }
 
-bool CollisionDetectionSystem::IsColliding(astu::Entity & a, astu::Entity & b)
+bool CollisionDetectionSystem::IsColliding(astu::Entity &a, astu::Entity &b)
 {
     // Get components of entity A
-    auto & poseA = a.GetComponent<Pose2D>();
-    auto & colA = a.GetComponent<CircleCollider>();
+    auto &poseA = a.GetComponent<Pose2D>();
+    auto &colA = a.GetComponent<CircleCollider>();
 
     // Get components of entity B
-    auto & poseB = b.GetComponent<Pose2D>();
-    auto & colB = b.GetComponent<CircleCollider>();
+    auto &poseB = b.GetComponent<Pose2D>();
+    auto &colB = b.GetComponent<CircleCollider>();
 
     Vector2<double> d = poseA.pos - poseB.pos;
 
-    double radiusSum = colA.radius+ colB.radius;
+    double radiusSum = colA.radius + colB.radius;
     return d.LengthSquared() <= radiusSum * radiusSum;
 }
 
