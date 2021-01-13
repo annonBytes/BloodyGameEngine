@@ -35,6 +35,8 @@
 #include "WindowTitleService.h"
 #include "CollisionDetectionSystem.h"
 #include "CollisionTestService.h"
+#include "PlayerMoveSystem.h"
+#include "PlayerTestService.h"
 
 // Applications specific
 #include "LineRendererTestService.h"
@@ -176,6 +178,8 @@ void AddApplicationStates()
 	ss.AddService("Player Test", std::make_shared<SdlLineRenderer>());
 	ss.AddService("Player Test", std::make_shared<AutoRotateSystem>());
 	ss.AddService("Player Test", std::make_shared<PolylineVisualSystem>());
+	ss.AddService("Player Test", std::make_shared<PlayerEventService>());
+	ss.AddService("Player Test", std::make_shared<PlayerMoveSystem>());
 	ss.AddService("Player Test", std::make_shared<PlayerTestService>());
 }
 

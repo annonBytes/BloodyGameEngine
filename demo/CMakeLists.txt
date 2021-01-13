@@ -19,7 +19,8 @@ add_executable(Demo
         ../common/WindowTitleService.cpp
         ../common/PolylineVisualSystem.cpp
         ../common/AutoRotateSystem.cpp
-        ../common/CollisionDetectionSystem.cpp        
+        ../common/CollisionDetectionSystem.cpp  
+        ../common/PlayerMoveSystem.cpp      
         LineRendererTestService.cpp         
         EntityTestService.cpp
         CreateEntityTestService.cpp

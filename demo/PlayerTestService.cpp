@@ -16,26 +16,48 @@
 #include <iostream>
 #include <AstUtils.h>
 #include <EntityService.h>
-#include <Mouse.h>
 #include "IWindowManager.h"
 #include "Pose2D.h"
-#include "Player.h"
+#include "Mouse.h"
 #include "LinearMovement.h"
-#include "CollisionTestService.h"
 #include "PlayerTestService.h"
+#include "Player.h"
+#include "PlayerMoveSystem.h"
 
 #define ENTITY_RADIUS 15.0
-#define NUM_ENTITIES 50
+#define NUM_ENTITIES 5
 
 using namespace astu;
 
 PlayerTestService::PlayerTestService(int priority) : UpdatableBaseService("playerTest", priority)
 {
+    // Create circular shape.
+    const int nSegments = 15;
+    shape2 = std::make_shared<Polyline::Polygon>();
+
+    double da = (2 * M_PI) / nSegments;
+    for (int i = 0; i < nSegments; ++i)
+    {
+        Vector2<double> v(ENTITY_RADIUS, 0);
+        v.Rotate(da * i);
+        shape2->push_back(v);
+    }
 }
 
 void PlayerTestService::OnStartup(/* args */)
 {
     GetSM().GetService<MouseButtonEventService>().AddListener(shared_as<PlayerTestService>());
+
+    auto &wm = GetSM().GetService<IWindowManager>();
+
+    for (int i = 0; i < NUM_ENTITIES; ++i)
+    {
+        Vector2<double> p;
+        p.x = GetRandomDouble(ENTITY_RADIUS, wm.GetWidth() - ENTITY_RADIUS);
+        p.y = GetRandomDouble(ENTITY_RADIUS, wm.GetHeight() - ENTITY_RADIUS);
+
+        AddTestEntity(p, GetRandomDouble(-180, 180), WebColors::White);
+    }
 }
 
 void PlayerTestService::OnShutdown()
@@ -48,6 +70,21 @@ void PlayerTestService::OnUpdate()
     Mouse mouse;
     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
     std::cout << pos << std::endl;
+}
+
+void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)
+{
+    Vector2<double> v(GetRandomDouble(50, 200), 0);
+    v.Rotate(ToRadians(GetRandomDouble(0, 360)));
+
+    auto entity = std::make_shared<Entity>();
+    entity->AddComponent(std::make_shared<Pose2D>(p));
+    entity->AddComponent(std::make_shared<Polyline>(shape2, c));
+    entity->AddComponent(std::make_shared<LinearMovement>(v));
+    entity->AddComponent(std::make_shared<Player>(ENTITY_RADIUS));
+
+    auto &es = GetSM().GetService<EntityService>();
+    es.AddEntity(entity);
 }
 
 void PlayerTestService::OnSignal(const astu::MouseButtonEvent &signal)
