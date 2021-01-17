@@ -16,8 +16,9 @@
 #include <memory>
 #include <Service.h>
 #include "Polyline.h"
+#include <IteratingEntitySystem.h>
 
-class PlayerTestService : public astu::UpdatableBaseService, public astu::MouseButtonListener
+class PlayerTestService : public astu::IteratingEntitySystem, public astu::MouseButtonListener
 {
 public:
     /**
@@ -28,13 +29,14 @@ public:
 protected:
     // Inherited via BaseService
     virtual void OnStartup() override;
-    virtual void OnUpdate() override;
+    virtual void ProcessEntity(astu::Entity &player) override;
     virtual void OnShutdown() override;
     virtual void OnSignal(const astu::MouseButtonEvent &signal) override;
 
 private:
     std::shared_ptr<Polyline::Polygon> shape1;
     std::shared_ptr<Polyline::Polygon> shape2;
+    static const astu::EntityFamily FAMILY;
 
     /**
      * Adds a test entity at a certain position.

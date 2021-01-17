@@ -25,11 +25,13 @@
 #include "PlayerMoveSystem.h"
 
 #define ENTITY_RADIUS 15.0
-#define NUM_ENTITIES 5
+#define NUM_ENTITIES 10
 
 using namespace astu;
 
-PlayerTestService::PlayerTestService(int priority) : UpdatableBaseService("playerTest", priority)
+const EntityFamily PlayerTestService::FAMILY = EntityFamily::Create<Pose2D, Polyline>();
+
+PlayerTestService::PlayerTestService(int priority) : IteratingEntitySystem(FAMILY, priority, "Player Visual System")
 {
     // Create circular shape.
     const int nSegments = 15;
@@ -65,11 +67,25 @@ void PlayerTestService::OnShutdown()
     GetSM().GetService<MouseButtonEventService>().RemoveListener(shared_as<PlayerTestService>());
 }
 
-void PlayerTestService::OnUpdate()
+// void PlayerTestService::OnUpdate()
+// {
+//     Mouse mouse;
+//     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
+//     std::cout << pos << std::endl;
+// }
+
+void PlayerTestService::ProcessEntity(Entity &e)
 {
+
     Mouse mouse;
     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
-    std::cout << pos << std::endl;
+
+    auto &pose = e.GetComponent<Pose2D>();
+    if (pose.pos.x - pos.x < 20 && pose.pos.y - pos.y < 20 && pose.pos.x - pos.x > -20 && pose.pos.y - pos.y > -20)
+    {
+        pose.pos.x += 20;
+        pose.pos.y += 20;
+    }
 }
 
 void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)

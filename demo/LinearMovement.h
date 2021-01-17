@@ -12,7 +12,8 @@
 #include <EntityService.h>
 #include <Vector2.h>
 
-class LinearMovement : public astu::EntityComponent {
+class LinearMovement : public astu::EntityComponent
+{
 public:
     /** The velocity of the linear movement. */
     astu::Vector2<double> vel;
@@ -22,7 +23,7 @@ public:
      * 
      * @param v the velicoty
      */
-    LinearMovement(const astu::Vector2<double> & v)
+    LinearMovement(const astu::Vector2<double> &v)
         : vel(v)
     {
         // Intentionally left empty.
@@ -39,5 +40,4 @@ public:
     {
         // Intentionally left empty.
     }
-
 };
