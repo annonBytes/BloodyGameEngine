@@ -36,7 +36,14 @@ protected:
 private:
     std::shared_ptr<Polyline::Polygon> shape1;
     std::shared_ptr<Polyline::Polygon> shape2;
+
     static const astu::EntityFamily FAMILY;
+
+    /** The world. */
+    double width;
+
+    /** The height of the output window. */
+    double height;
 
     /**
      * Adds a test entity at a certain position.
@@ -46,5 +53,8 @@ private:
      * @param s the rotation speed in degrees per seconds
      * @param c the color of the test entity
      */
+
+    bool IsColliding(astu::Entity &a, astu::Entity &b);
+    void ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b);
     void AddTestEntity(const astu::Vector2<double> &p, double s, const astu::Color &c);
 };

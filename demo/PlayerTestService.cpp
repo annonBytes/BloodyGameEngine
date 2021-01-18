@@ -23,9 +23,11 @@
 #include "PlayerTestService.h"
 #include "Player.h"
 #include "PlayerMoveSystem.h"
+#include "CollisionTestService.h"
+#include "CollisionDetectionSystem.h"
 
 #define ENTITY_RADIUS 15.0
-#define NUM_ENTITIES 10
+#define NUM_ENTITIES 5
 
 using namespace astu;
 
@@ -33,6 +35,7 @@ const EntityFamily PlayerTestService::FAMILY = EntityFamily::Create<Pose2D, Poly
 
 PlayerTestService::PlayerTestService(int priority) : IteratingEntitySystem(FAMILY, priority, "Player Visual System")
 {
+
     // Create circular shape.
     const int nSegments = 15;
     shape2 = std::make_shared<Polyline::Polygon>();
@@ -67,24 +70,56 @@ void PlayerTestService::OnShutdown()
     GetSM().GetService<MouseButtonEventService>().RemoveListener(shared_as<PlayerTestService>());
 }
 
-// void PlayerTestService::OnUpdate()
-// {
-//     Mouse mouse;
-//     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
-//     std::cout << pos << std::endl;
-// }
-
 void PlayerTestService::ProcessEntity(Entity &e)
 {
+
+    auto &wm = GetSM().GetService<astu::IWindowManager>();
+    width = wm.GetWidth();
+    height = wm.GetHeight();
 
     Mouse mouse;
     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
 
     auto &pose = e.GetComponent<Pose2D>();
+    auto &mov = e.GetComponent<LinearMovement>();
+
+    // pose.pos += mov.vel * GetDeltaTime();
+
+    // Keep within boundaries.
+    if (pose.pos.x < 0)
+    {
+        pose.pos.x = 0;
+        mov.vel.x = -mov.vel.x;
+    }
+    if (pose.pos.x >= width)
+    {
+        pose.pos.x = width - 1;
+        mov.vel.x = -mov.vel.x;
+    }
+
+    if (pose.pos.y < 0)
+    {
+        pose.pos.y = 0;
+        mov.vel.y = -mov.vel.y;
+    }
+    if (pose.pos.y >= height)
+    {
+        pose.pos.y = height - 1;
+        mov.vel.y = -mov.vel.y;
+    }
+
     if (pose.pos.x - pos.x < 20 && pose.pos.y - pos.y < 20 && pose.pos.x - pos.x > -20 && pose.pos.y - pos.y > -20)
     {
-        pose.pos.x += 20;
-        pose.pos.y += 20;
+        // pose.pos.x -= 50;
+        // pose.pos.y -= 50;
+
+        // pose.pos.x = pose.pos.x + mov.vel.x;
+        // pose.pos.y = pose.pos.y + mov.vel.y;
+        pose.pos.x = pos.x - mov.vel.x * GetDeltaTime();
+        mov.vel.x = mov.vel.x - pose.pos.x * GetDeltaTime();
+
+        pose.pos.y = pos.y - mov.vel.y * GetDeltaTime();
+        mov.vel.y = mov.vel.y - pose.pos.y * GetDeltaTime();
     }
 }
 
@@ -101,6 +136,22 @@ void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const 
 
     auto &es = GetSM().GetService<EntityService>();
     es.AddEntity(entity);
+}
+
+bool PlayerTestService::IsColliding(astu::Entity &a, astu::Entity &b)
+{
+    // Get components of entity A
+    auto &poseA = a.GetComponent<Pose2D>();
+    auto &colA = a.GetComponent<CircleCollider>();
+
+    // Get components of entity B
+    auto &poseB = b.GetComponent<Pose2D>();
+    auto &colB = b.GetComponent<CircleCollider>();
+
+    Vector2<double> d = poseA.pos - poseB.pos;
+
+    double radiusSum = colA.radius + colB.radius;
+    return d.LengthSquared() <= radiusSum * radiusSum;
 }
 
 void PlayerTestService::OnSignal(const astu::MouseButtonEvent &signal)
