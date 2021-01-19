@@ -25,6 +25,7 @@
 #include "PlayerMoveSystem.h"
 #include "CollisionTestService.h"
 #include "CollisionDetectionSystem.h"
+#include "CircleCollider.h"
 
 #define ENTITY_RADIUS 15.0
 #define NUM_ENTITIES 5
@@ -133,6 +134,7 @@ void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const 
     entity->AddComponent(std::make_shared<Polyline>(shape2, c));
     entity->AddComponent(std::make_shared<LinearMovement>(v));
     entity->AddComponent(std::make_shared<Player>(ENTITY_RADIUS));
+    entity->AddComponent(std::make_shared<CircleCollider>(ENTITY_RADIUS));
 
     auto &es = GetSM().GetService<EntityService>();
     es.AddEntity(entity);

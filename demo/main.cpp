@@ -167,7 +167,7 @@ void AddApplicationStates()
 	ss.AddService("Collision Test", std::make_shared<AutoRotateSystem>());
 	ss.AddService("Collision Test", std::make_shared<PolylineVisualSystem>());
 	ss.AddService("Collision Test", std::make_shared<LinearMovementSystem>());
-	ss.AddService("Collision Test", std::make_shared<CollisionEventService>());
+	//ss.AddService("Collision Test", std::make_shared<CollisionEventService>());
 	ss.AddService("Collision Test", std::make_shared<CollisionDetectionSystem>());
 	ss.AddService("Collision Test", std::make_shared<CollisionTestService>());
 
@@ -181,6 +181,7 @@ void AddApplicationStates()
 	ss.AddService("Player Test", std::make_shared<PlayerEventService>());
 	ss.AddService("Player Test", std::make_shared<PlayerMoveSystem>());
 	ss.AddService("Player Test", std::make_shared<PlayerTestService>());
+	ss.AddService("Player Test", std::make_shared<CollisionDetectionSystem>());
 }
 
 int main()
@@ -206,7 +207,7 @@ int main()
 	// Start services
 	sm.StartupAll();
 
-	sm.GetService<StateService>().SwitchState("Collision Test");
+	sm.GetService<StateService>().SwitchState("Player Test");
 
 	// Run game loop
 	auto &updater = sm.GetService<UpdateService>();

@@ -17,22 +17,20 @@
 #include "CollisionDetectionSystem.h"
 #include "Polyline.h"
 
-class CollisionTestService 
+class CollisionTestService
     : public astu::BaseService
-    , public CollisionListener
+// , public CollisionListener
 {
 public:
-
     /**
      * Constructor.
      */
     CollisionTestService();
 
     // Inherited via CollisionListener
-    virtual void OnSignal(const CollisionEvent & event) override;       
+    //virtual void OnSignal(const CollisionEvent & event) override;
 
 protected:
-
     // Inherited via BaseService
     virtual void OnStartup() override;
     virtual void OnShutdown() override;
@@ -47,5 +45,5 @@ private:
      * @param s the rotation speed in degrees per seconds
      * @param c the color of the test entity
      */
-    void AddTestEntity(const astu::Vector2<double> & p, double s, const astu::Color & c);
+    void AddTestEntity(const astu::Vector2<double> &p, double s, const astu::Color &c);
 };

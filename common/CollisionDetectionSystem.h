@@ -5,31 +5,31 @@
 #include <SignalService.h>
 #include "CircleCollider.h"
 
-class CollisionEvent final
-{
-public:
-    std::shared_ptr<astu::Entity> entityA;
-    std::shared_ptr<astu::Entity> entityB;
+// class CollisionEvent final
+// {
+// public:
+//     std::shared_ptr<astu::Entity> entityA;
+//     std::shared_ptr<astu::Entity> entityB;
 
-    CollisionEvent(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
-        : entityA(a), entityB(b)
-    {
-        // Intentionally left empty.
-    }
+//     CollisionEvent(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
+//         : entityA(a), entityB(b)
+//     {
+//         // Intentionally left empty.
+//     }
 
-    astu::Entity &GetEntityA() const
-    {
-        return *entityA;
-    }
+//     astu::Entity &GetEntityA() const
+//     {
+//         return *entityA;
+//     }
 
-    astu::Entity &GetEntityB() const
-    {
-        return *entityB;
-    }
-};
+//     astu::Entity &GetEntityB() const
+//     {
+//         return *entityB;
+//     }
+// };
 
-using CollisionEventService = astu::SignalService<CollisionEvent>;
-using CollisionListener = astu::ISignalListener<CollisionEvent>;
+// using CollisionEventService = astu::SignalService<CollisionEvent>;
+// using CollisionListener = astu::ISignalListener<CollisionEvent>;
 
 class CollisionDetectionSystem : public astu::UpdatableBaseService
 {
@@ -41,7 +41,7 @@ private:
     std::shared_ptr<astu::EntityView> entityView;
 
     /** Used to report collisions. */
-    std::shared_ptr<CollisionEventService> collisionEventService;
+    //std::shared_ptr<CollisionEventService> collisionEventService;
 
     // Inherited via Base Service
     virtual void OnStartup() override;
@@ -49,5 +49,6 @@ private:
     virtual void OnUpdate() override;
 
     bool IsColliding(astu::Entity &a, astu::Entity &b);
-    void ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b);
+    void ReportCollision(astu::Entity &a, astu::Entity &b);
+    //void ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b);
 };

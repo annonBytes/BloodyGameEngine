@@ -46,7 +46,8 @@ CollisionTestService::CollisionTestService()
 void CollisionTestService::OnStartup()
 {
     // Register as collision listener.
-    GetSM().GetService<CollisionEventService>().AddListener(shared_as<CollisionListener>());
+    GetSM().GetService<EntityService>();
+    //GetSM().GetService<CollisionEventService>().AddListener(shared_as<CollisionListener>());
 
     auto &wm = GetSM().GetService<IWindowManager>();
 
@@ -63,7 +64,8 @@ void CollisionTestService::OnStartup()
 void CollisionTestService::OnShutdown()
 {
     // De-Register as collision listener.
-    GetSM().GetService<CollisionEventService>().RemoveListener(shared_as<CollisionListener>());
+    //GetSM().GetService<CollisionEventService>().RemoveListener(shared_as<CollisionListener>());
+    GetSM().GetService<EntityService>();
 }
 
 void CollisionTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)
@@ -81,14 +83,14 @@ void CollisionTestService::AddTestEntity(const Vector2<double> &p, double s, con
     es.AddEntity(entity);
 }
 
-void CollisionTestService::OnSignal(const CollisionEvent &event)
-{
-    if (GetRandomDouble() >= 0.5)
-    {
-        GetSM().GetService<EntityService>().RemoveEntity(event.entityA);
-    }
-    else
-    {
-        GetSM().GetService<EntityService>().RemoveEntity(event.entityB);
-    }
-}
+// void CollisionTestService::OnSignal(const CollisionEvent &event)
+// {
+//     if (GetRandomDouble() >= 0.5)
+//     {
+//         GetSM().GetService<EntityService>().RemoveEntity(event.entityA);
+//     }
+//     else
+//     {
+//         GetSM().GetService<EntityService>().RemoveEntity(event.entityB);
+//     }
+// }
