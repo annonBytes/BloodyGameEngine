@@ -15,7 +15,7 @@ set(CMAKE_CXX_STANDARD 17)
 # (Target name followed by blank-separated C++ source files, no header files!)
 add_executable(Demo
         main.cpp 
-        ../common/SdlLineRenderer.cpp
+         ../common/SdlLineRenderer.cpp
         ../common/WindowTitleService.cpp
         ../common/PolylineVisualSystem.cpp
         ../common/AutoRotateSystem.cpp

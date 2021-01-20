@@ -18,32 +18,22 @@
 #include "Polyline.h"
 #include <IteratingEntitySystem.h>
 
-class PlayerTestService : public astu::IteratingEntitySystem, public astu::MouseButtonListener
+class BallTestService : public astu::BaseService
 {
 public:
     /**
      * Constructor.
      */
-    PlayerTestService(int priority = 0);
+    BallTestService();
 
 protected:
     // Inherited via BaseService
     virtual void OnStartup() override;
-    virtual void ProcessEntity(astu::Entity &player) override;
     virtual void OnShutdown() override;
-    virtual void OnSignal(const astu::MouseButtonEvent &signal) override;
 
 private:
     std::shared_ptr<Polyline::Polygon> shape1;
     std::shared_ptr<Polyline::Polygon> shape2;
-
-    static const astu::EntityFamily FAMILY;
-
-    /** The world. */
-    double width;
-
-    /** The height of the output window. */
-    double height;
 
     /**
      * Adds a test entity at a certain position.
@@ -54,7 +44,5 @@ private:
      * @param c the color of the test entity
      */
 
-    bool IsColliding(astu::Entity &a, astu::Entity &b);
-    void ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b);
-    void AddTestEntity(const astu::Vector2<double> &p, double s, const astu::Color &c);
+    void AddTestEntity(int t, const astu::Vector2<double> &p, double s, const astu::Color &c);
 };

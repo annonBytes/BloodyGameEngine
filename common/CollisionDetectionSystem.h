@@ -11,6 +11,12 @@ public:
     std::shared_ptr<astu::Entity> entityA;
     std::shared_ptr<astu::Entity> entityB;
 
+    CollisionEvent()
+    {
+        // Intentionally left empty.
+    }
+
+    //adding parameter to constructors -immdiately initialiing it
     CollisionEvent(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
         : entityA(a), entityB(b)
     {
@@ -28,6 +34,7 @@ public:
     }
 };
 
+//Using alias to store up names
 using CollisionEventService = astu::SignalService<CollisionEvent>;
 using CollisionListener = astu::ISignalListener<CollisionEvent>;
 

@@ -23,14 +23,23 @@
 #include "PlayerTestService.h"
 #include "Player.h"
 #include "PlayerMoveSystem.h"
+#include "CollisionTestService.h"
+#include "CollisionDetectionSystem.h"
+#include "CircleCollider.h"
+#include "Physics2D.h"
+#include "Physics2DSystem.h"
+#include "EntityTestService.h"
 
 #define ENTITY_RADIUS 15.0
 #define NUM_ENTITIES 5
 
 using namespace astu;
 
-PlayerTestService::PlayerTestService(int priority) : UpdatableBaseService("playerTest", priority)
+const EntityFamily PlayerTestService::FAMILY = EntityFamily::Create<Pose2D, Polyline>();
+
+PlayerTestService::PlayerTestService(int priority) : IteratingEntitySystem(FAMILY, priority, "Player Visual System")
 {
+
     // Create circular shape.
     const int nSegments = 15;
     shape2 = std::make_shared<Polyline::Polygon>();
@@ -46,6 +55,7 @@ PlayerTestService::PlayerTestService(int priority) : UpdatableBaseService("playe
 
 void PlayerTestService::OnStartup(/* args */)
 {
+
     GetSM().GetService<MouseButtonEventService>().AddListener(shared_as<PlayerTestService>());
 
     auto &wm = GetSM().GetService<IWindowManager>();
@@ -65,11 +75,68 @@ void PlayerTestService::OnShutdown()
     GetSM().GetService<MouseButtonEventService>().RemoveListener(shared_as<PlayerTestService>());
 }
 
-void PlayerTestService::OnUpdate()
+void PlayerTestService::ProcessEntity(Entity &e)
 {
+
+    auto &wm = GetSM().GetService<astu::IWindowManager>();
+    width = wm.GetWidth();
+    height = wm.GetHeight();
+
     Mouse mouse;
     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
+
     std::cout << pos << std::endl;
+
+    auto &pose = e.GetComponent<Pose2D>();
+    auto &mov = e.GetComponent<LinearMovement>();
+    auto &physics = e.GetComponent<Physics2D>();
+
+    // pose.pos += mov.vel * GetDeltaTime();
+
+    // Keep within boundaries.
+    if (pose.pos.x < 0)
+    {
+        pose.pos.x = 0;
+        mov.vel.x = -mov.vel.x;
+    }
+    if (pose.pos.x >= width)
+    {
+        pose.pos.x = width - 1;
+        mov.vel.x = -mov.vel.x;
+    }
+
+    if (pose.pos.y < 0)
+    {
+        pose.pos.y = 0;
+        mov.vel.y = -mov.vel.y;
+    }
+    if (pose.pos.y >= height)
+    {
+        pose.pos.y = height - 1;
+        mov.vel.y = -mov.vel.y;
+    }
+
+    if (pose.pos.x - pos.x < 20 && pose.pos.y - pos.y < 20 && pose.pos.x - pos.x > -20 && pose.pos.y - pos.y > -20)
+    {
+        // pose.pos.x -= 50;
+        // pose.pos.y -= 50;
+
+        // pose.pos.x = pose.pos.x + mov.vel.x;
+        // pose.pos.y = pose.pos.y + mov.vel.y;
+
+        //Linear Motion
+
+        // physics.vel.x += (physics.force.x * physics.mass * 20) * GetDeltaTime();
+        // physics.vel.y += (physics.force.y * physics.mass * 20) * GetDeltaTime();
+        // pose.pos += physics.vel * GetDeltaTime();
+
+        //follow up
+        pose.pos.x = pos.x - mov.vel.x * GetDeltaTime();
+        mov.vel.x = mov.vel.x - pose.pos.x * GetDeltaTime();
+
+        pose.pos.y = pos.y - mov.vel.y * GetDeltaTime();
+        mov.vel.y = mov.vel.y - pose.pos.y * GetDeltaTime();
+    }
 }
 
 void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)
@@ -82,9 +149,27 @@ void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const 
     entity->AddComponent(std::make_shared<Polyline>(shape2, c));
     entity->AddComponent(std::make_shared<LinearMovement>(v));
     entity->AddComponent(std::make_shared<Player>(ENTITY_RADIUS));
+    entity->AddComponent(std::make_shared<CircleCollider>(ENTITY_RADIUS));
+    entity->AddComponent(std::make_shared<Physics2D>(ENTITY_RADIUS));
 
     auto &es = GetSM().GetService<EntityService>();
     es.AddEntity(entity);
+}
+
+bool PlayerTestService::IsColliding(astu::Entity &a, astu::Entity &b)
+{
+    // Get components of entity A
+    auto &poseA = a.GetComponent<Pose2D>();
+    auto &colA = a.GetComponent<CircleCollider>();
+
+    // Get components of entity B
+    auto &poseB = b.GetComponent<Pose2D>();
+    auto &colB = b.GetComponent<CircleCollider>();
+
+    Vector2<double> d = poseA.pos - poseB.pos;
+
+    double radiusSum = colA.radius + colB.radius;
+    return d.LengthSquared() <= radiusSum * radiusSum;
 }
 
 void PlayerTestService::OnSignal(const astu::MouseButtonEvent &signal)

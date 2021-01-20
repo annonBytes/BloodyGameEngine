@@ -2,6 +2,7 @@
 #include <EntityService.h>
 #include <Vector2.h>
 #include <iostream>
+#include "Polyline.h"
 
 #include "Pose2D.h"
 #include "CircleCollider.h"
@@ -36,6 +37,12 @@ void CollisionDetectionSystem::OnShutdown()
 
 void CollisionDetectionSystem::OnUpdate()
 {
+
+    for (auto &e : *entityView)
+    {
+        e->GetComponent<Polyline>().color = WebColors::White;
+    }
+
     for (size_t j = 0; j < entityView->size(); ++j)
     {
         const auto &entityA = (*entityView)[j];
@@ -46,6 +53,7 @@ void CollisionDetectionSystem::OnUpdate()
 
             if (IsColliding(*entityA, *entityB))
             {
+                // ReportCollision(entityA, entityB);
                 ReportCollision(entityA, entityB);
             }
         }
@@ -68,7 +76,16 @@ bool CollisionDetectionSystem::IsColliding(astu::Entity &a, astu::Entity &b)
     return d.LengthSquared() <= radiusSum * radiusSum;
 }
 
+//void CollisionDetectionSystem::ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
 void CollisionDetectionSystem::ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
 {
+
     collisionEventService->QueueSignal(CollisionEvent(a, b));
+
+    //Debug version
+    auto &polyA = a->GetComponent<Polyline>();
+    auto &polyB = b->GetComponent<Polyline>();
+
+    polyA.color = WebColors::Red;
+    polyB.color = WebColors::Red;
 }

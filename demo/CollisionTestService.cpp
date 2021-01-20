@@ -46,6 +46,7 @@ CollisionTestService::CollisionTestService()
 void CollisionTestService::OnStartup()
 {
     // Register as collision listener.
+    //GetSM().GetService<EntityService>();
     GetSM().GetService<CollisionEventService>().AddListener(shared_as<CollisionListener>());
 
     auto &wm = GetSM().GetService<IWindowManager>();
@@ -64,6 +65,7 @@ void CollisionTestService::OnShutdown()
 {
     // De-Register as collision listener.
     GetSM().GetService<CollisionEventService>().RemoveListener(shared_as<CollisionListener>());
+    //GetSM().GetService<EntityService>();
 }
 
 void CollisionTestService::AddTestEntity(const Vector2<double> &p, double s, const Color &c)
@@ -91,4 +93,5 @@ void CollisionTestService::OnSignal(const CollisionEvent &event)
     {
         GetSM().GetService<EntityService>().RemoveEntity(event.entityB);
     }
+    std::cout << "collision" << std::endl;
 }

@@ -9,34 +9,26 @@
  * Copyright 2020 Bagaga Development Team. All rights reserved.                                             
  */
 
+#pragma once
+
 #include <EntityService.h>
 #include <Vector2.h>
 
-class LinearMovement : public astu::EntityComponent
+class Physics2D : public astu::EntityComponent
 {
 public:
-    /** The velocity of the linear movement. */
     astu::Vector2<double> vel;
+    astu::Vector2<double> force;
+    double mass;
 
-    /**
-     * Constructor.
-     * 
-     * @param v the velicoty
-     */
-    LinearMovement(const astu::Vector2<double> &v)
-        : vel(v)
+    Physics2D(double velX = 0, double velY = 0, double forceX = 0, double forceY = 0, double _mass = 0)
+        : vel(velX, velY), force(forceX, forceY), mass(_mass)
     {
         // Intentionally left empty.
     }
 
-    /**
-     * Constructor.
-     * 
-     * @param vx the x-component of the velicoty
-     * @param vy the y-component of the velicoty
-     */
-    LinearMovement(double vx, double vy)
-        : vel(vx, vy)
+    Physics2D(const astu::Vector2<double> &v, const astu::Vector2<double> &f, double _mass = 0)
+        : vel(v), force(f), mass(_mass)
     {
         // Intentionally left empty.
     }

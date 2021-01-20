@@ -28,7 +28,7 @@ LinearMovementSystem::LinearMovementSystem(int priority)
 
 void LinearMovementSystem::OnStartup()
 {
-    auto & wm = GetSM().GetService<astu::IWindowManager>();
+    auto &wm = GetSM().GetService<astu::IWindowManager>();
     width = wm.GetWidth();
     height = wm.GetHeight();
 }
@@ -38,28 +38,33 @@ void LinearMovementSystem::OnShutdown()
     // Intentionally left empty.
 }
 
-void LinearMovementSystem::ProcessEntity(Entity & e)
+void LinearMovementSystem::ProcessEntity(Entity &e)
 {
-    auto & pose = e.GetComponent<Pose2D>();
-    auto & mov = e.GetComponent<LinearMovement>();
+    auto &pose = e.GetComponent<Pose2D>();
+    auto &mov = e.GetComponent<LinearMovement>();
 
     pose.pos += mov.vel * GetDeltaTime();
 
     // Keep within boundaries.
-    if (pose.pos.x < 0) {
+    if (pose.pos.x < 0)
+    {
         pose.pos.x = 0;
         mov.vel.x = -mov.vel.x;
     }
-    if (pose.pos.x >= width) {
+
+    if (pose.pos.x >= width)
+    {
         pose.pos.x = width - 1;
         mov.vel.x = -mov.vel.x;
     }
 
-    if (pose.pos.y < 0)  {
+    if (pose.pos.y < 0)
+    {
         pose.pos.y = 0;
         mov.vel.y = -mov.vel.y;
     }
-    if (pose.pos.y >= height) {
+    if (pose.pos.y >= height)
+    {
         pose.pos.y = height - 1;
         mov.vel.y = -mov.vel.y;
     }
