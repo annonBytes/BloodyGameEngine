@@ -26,6 +26,9 @@
 #include "CollisionTestService.h"
 #include "CollisionDetectionSystem.h"
 #include "CircleCollider.h"
+#include "Physics2D.h"
+#include "Physics2DSystem.h"
+#include "EntityTestService.h"
 
 #define ENTITY_RADIUS 15.0
 #define NUM_ENTITIES 5
@@ -52,6 +55,7 @@ PlayerTestService::PlayerTestService(int priority) : IteratingEntitySystem(FAMIL
 
 void PlayerTestService::OnStartup(/* args */)
 {
+
     GetSM().GetService<MouseButtonEventService>().AddListener(shared_as<PlayerTestService>());
 
     auto &wm = GetSM().GetService<IWindowManager>();
@@ -81,8 +85,11 @@ void PlayerTestService::ProcessEntity(Entity &e)
     Mouse mouse;
     Vector2<double> pos(mouse.GetCursorX(), mouse.GetCursorY());
 
+    std::cout << pos << std::endl;
+
     auto &pose = e.GetComponent<Pose2D>();
     auto &mov = e.GetComponent<LinearMovement>();
+    auto &physics = e.GetComponent<Physics2D>();
 
     // pose.pos += mov.vel * GetDeltaTime();
 
@@ -116,6 +123,14 @@ void PlayerTestService::ProcessEntity(Entity &e)
 
         // pose.pos.x = pose.pos.x + mov.vel.x;
         // pose.pos.y = pose.pos.y + mov.vel.y;
+
+        //Linear Motion
+
+        // physics.vel.x += (physics.force.x * physics.mass * 20) * GetDeltaTime();
+        // physics.vel.y += (physics.force.y * physics.mass * 20) * GetDeltaTime();
+        // pose.pos += physics.vel * GetDeltaTime();
+
+        //follow up
         pose.pos.x = pos.x - mov.vel.x * GetDeltaTime();
         mov.vel.x = mov.vel.x - pose.pos.x * GetDeltaTime();
 
@@ -135,6 +150,7 @@ void PlayerTestService::AddTestEntity(const Vector2<double> &p, double s, const 
     entity->AddComponent(std::make_shared<LinearMovement>(v));
     entity->AddComponent(std::make_shared<Player>(ENTITY_RADIUS));
     entity->AddComponent(std::make_shared<CircleCollider>(ENTITY_RADIUS));
+    entity->AddComponent(std::make_shared<Physics2D>(ENTITY_RADIUS));
 
     auto &es = GetSM().GetService<EntityService>();
     es.AddEntity(entity);

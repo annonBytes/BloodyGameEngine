@@ -1,11 +1,27 @@
+/*  ____          _____          _____          
+ * |  _ \   /\   / ____|   /\   / ____|   /\    
+ * | |_) | /  \ | |  __   /  \ | |  __   /  \   
+ * |  _ < / /\ \| | |_ | / /\ \| | |_ | / /\ \  
+ * | |_) / ____ \ |__| |/ ____ \ |__| |/ ____ \ 
+ * |____/_/    \_\_____/_/    \_\_____/_/    \_\
+ *
+ * Bagaga - Bloody Amazing Game Architecture Game
+ * Copyright 2020 Bagaga Development Team. All rights reserved.                                             
+ */
+
 #pragma once
 
 #include <IteratingEntitySystem.h>
-#include "Player.h"
+#include "ILineRenderer.h"
 
 class Physics2DSystem : public astu::IteratingEntitySystem
 {
 public:
+    /**
+     * Constructor.
+     * 
+     * @param priority  the update priority of this service
+     */
     Physics2DSystem(int priority = 0);
 
 protected:

@@ -12,15 +12,15 @@
 #include <stdexcept>
 #include <cassert>
 #include "Pose2D.h"
-#include "Physics.h"
-#include <Physics2DSystem.h
+#include "Physics2D.h"
+#include "Physics2DSystem.h"
 
 using namespace astu;
 
 const EntityFamily Physics2DSystem::FAMILY = EntityFamily::Create<Pose2D, Physics2D>();
 
 Physics2DSystem::Physics2DSystem(int priority)
-    : IteratingEntitySystem(FAMILY, priority, "Physics System")
+    : IteratingEntitySystem(FAMILY, priority, "Phsysics2D System")
 {
     // Intentionally left empty.
 }
@@ -40,5 +40,7 @@ void Physics2DSystem::ProcessEntity(Entity &e)
     auto &pose = e.GetComponent<Pose2D>();
     auto &physics = e.GetComponent<Physics2D>();
 
-    pose.angle += physics.vel * GetDeltaTime();
+    physics.vel.x += (physics.force.x * physics.mass) * GetDeltaTime();
+    physics.vel.y += (physics.force.y * physics.mass) * GetDeltaTime();
+    pose.pos += physics.vel * GetDeltaTime();
 }

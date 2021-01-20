@@ -11,24 +11,20 @@
 
 #pragma once
 
+#include <UpdateService.h>
+#include <Events.h>
 #include <memory>
 #include <Service.h>
-
-#include "CollisionDetectionSystem.h"
 #include "Polyline.h"
+#include <IteratingEntitySystem.h>
 
-class CollisionTestService
-    : public astu::BaseService,
-      public CollisionListener
+class BallTestService : public astu::BaseService
 {
 public:
     /**
      * Constructor.
      */
-    CollisionTestService();
-
-    // Inherited via CollisionListener
-    virtual void OnSignal(const CollisionEvent &event) override;
+    BallTestService();
 
 protected:
     // Inherited via BaseService
@@ -36,14 +32,17 @@ protected:
     virtual void OnShutdown() override;
 
 private:
-    std::shared_ptr<Polyline::Polygon> shape;
+    std::shared_ptr<Polyline::Polygon> shape1;
+    std::shared_ptr<Polyline::Polygon> shape2;
 
     /**
      * Adds a test entity at a certain position.
      * 
+     * @param t the type of the entity to create
      * @param p the position of the test entity in world space
      * @param s the rotation speed in degrees per seconds
      * @param c the color of the test entity
      */
-    void AddTestEntity(const astu::Vector2<double> &p, double s, const astu::Color &c);
+
+    void AddTestEntity(int t, const astu::Vector2<double> &p, double s, const astu::Color &c);
 };

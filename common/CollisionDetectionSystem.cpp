@@ -22,16 +22,16 @@ void CollisionDetectionSystem::OnStartup()
     entityView =
         es.GetEntityView(EntityFamily::Create<Pose2D, CircleCollider>());
 
-    // collisionEventService = GetSM().FindService<CollisionEventService>();
-    // if (!collisionEventService)
-    // {
-    //     throw std::logic_error("Collision detection systems requires collision event service");
-    // }
+    collisionEventService = GetSM().FindService<CollisionEventService>();
+    if (!collisionEventService)
+    {
+        throw std::logic_error("Collision detection systems requires collision event service");
+    }
 }
 
 void CollisionDetectionSystem::OnShutdown()
 {
-    //collisionEventService = nullptr;
+    collisionEventService = nullptr;
     entityView = nullptr;
 }
 
@@ -54,8 +54,7 @@ void CollisionDetectionSystem::OnUpdate()
             if (IsColliding(*entityA, *entityB))
             {
                 // ReportCollision(entityA, entityB);
-                ReportCollision(*entityA, *entityB);
-                // sstd::cout << "collision" << std::endl;
+                ReportCollision(entityA, entityB);
             }
         }
     }
@@ -78,12 +77,15 @@ bool CollisionDetectionSystem::IsColliding(astu::Entity &a, astu::Entity &b)
 }
 
 //void CollisionDetectionSystem::ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
-void CollisionDetectionSystem::ReportCollision(astu::Entity &a, astu::Entity &b)
+void CollisionDetectionSystem::ReportCollision(std::shared_ptr<astu::Entity> a, std::shared_ptr<astu::Entity> b)
 {
-    auto &polyA = a.GetComponent<Polyline>();
-    auto &polyB = b.GetComponent<Polyline>();
+
+    collisionEventService->QueueSignal(CollisionEvent(a, b));
+
+    //Debug version
+    auto &polyA = a->GetComponent<Polyline>();
+    auto &polyB = b->GetComponent<Polyline>();
 
     polyA.color = WebColors::Red;
     polyB.color = WebColors::Red;
-    //    collisionEventService->QueueSignal(CollisionEvent(a, b));
 }

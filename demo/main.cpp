@@ -167,7 +167,7 @@ void AddApplicationStates()
 	ss.AddService("Collision Test", std::make_shared<AutoRotateSystem>());
 	ss.AddService("Collision Test", std::make_shared<PolylineVisualSystem>());
 	ss.AddService("Collision Test", std::make_shared<LinearMovementSystem>());
-	//ss.AddService("Collision Test", std::make_shared<CollisionEventService>());
+	ss.AddService("Collision Test", std::make_shared<CollisionEventService>());
 	ss.AddService("Collision Test", std::make_shared<CollisionDetectionSystem>());
 	ss.AddService("Collision Test", std::make_shared<CollisionTestService>());
 
@@ -180,8 +180,9 @@ void AddApplicationStates()
 	ss.AddService("Player Test", std::make_shared<PolylineVisualSystem>());
 	ss.AddService("Player Test", std::make_shared<PlayerEventService>());
 	ss.AddService("Player Test", std::make_shared<PlayerMoveSystem>());
-	ss.AddService("Player Test", std::make_shared<PlayerTestService>());
+	ss.AddService("Player Test", std::make_shared<CollisionEventService>());
 	ss.AddService("Player Test", std::make_shared<CollisionDetectionSystem>());
+	ss.AddService("Player Test", std::make_shared<PlayerTestService>());
 }
 
 int main()
